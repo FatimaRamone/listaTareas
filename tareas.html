@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de tareas</title>
+</head>
+<body>
+    <!-- Input para agregar nuevas tareas -->
+    <input type="text" name="texto" id="texto">
+    <button onclick="anadirTarea()">Agregar</button>
+    
+    <!-- Lista de tareas -->
+    <ul id="tareas"></ul>
+
+    <script>
+        // Variable que almacena las tareas
+        var listaTareas = [];
+
+        // Elemento de la lista de tareas en el documento HTML
+        var elemTareas = document.getElementById("tareas");
+
+        // Función para añadir una tarea a la lista
+        function anadirTarea() {
+            // Obtiene el texto ingresado en el input
+            var texto = document.getElementById("texto").value;
+            
+            // Agrega el texto a la lista de tareas
+            listaTareas.push(texto);
+            
+            // Actualiza la lista de tareas en el documento HTML
+            actualizarTareas();
+        }
+
+        // Función para actualizar la lista de tareas en el documento HTML
+        function actualizarTareas() {
+            // Limpia el contenido actual de la lista de tareas
+            elemTareas.innerHTML = "";
+
+            // Recorre la lista de tareas y crea elementos <li> y <input> para cada una
+            for (var i = 0; i < listaTareas.length; i++) {
+                var li = document.createElement("li"); // Crea un elemento <li>
+                var chk = document.createElement("input"); // Crea un elemento <input>
+                chk.setAttribute("type", "checkbox"); // Establece el tipo del input como checkbox
+                chk.addEventListener("change" , eliminarElemento);
+                chk.setAttribute("id" , i );
+                var t = document.createTextNode(listaTareas[i]); // Crea un nodo de texto con el contenido de la tarea
+                li.appendChild(chk); // Agrega el checkbox al elemento <li>
+                li.appendChild(t); // Agrega el nodo de texto al elemento <li>
+                elemTareas.appendChild(li); // Agrega el elemento <li> a la lista de tareas
+                
+            }
+            guardarTareas();
+        }
+
+        function eliminarElemento(){
+            var i =parseInt(event.target.id); //Convertir una cadena a un entero 
+            listaTareas.splice(i ,1) ;// eliminamos un elemento desde la posición i
+            actualizarTareas(); //Regenera la lista
+
+
+        }
+
+        function cargarTareas() {
+            listaTareas = JSON.parse(localStorage.getItem("tareas")); // recuperas el valor del JSON
+            if (listaTareas ==null){
+                listaTareas=[];
+            }
+
+        }
+
+        function guardarTareas(){
+            localStorage.setItem("tareas", JSON.stringify(listaTareas)); // conviertes la lista
+        }
+        cargarTareas()
+        actualizarTareas()
+    </script>
+</body>
+</html>
